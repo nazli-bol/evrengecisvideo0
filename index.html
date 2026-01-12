@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Dual Sync Video Switch</title>
+<style>
+  body{
+    margin:0;
+    background:#000 url('https://i.pinimg.com/1200x/af/42/c1/af42c16f87d006ae3cb9ae24e9480988.jpg') center/cover no-repeat fixed;
+    height:100vh;
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    font-family:Arial;
+  }
+  
+  .container {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:100%;
+    max-width:1600px;
+  }
+  
+  #wrap{ 
+    position:relative;
+    width:95%;
+    max-width:1500px;
+    height:800px;
+  }
+  
+  video{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    border-radius:10px;
+    transition:opacity .4s;
+  }
+  
+  #videoB{opacity:0;}
+  
+  .gecis-yazisi {
+    color:#fff;
+    padding:10px 0;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:40px;
+    text-align:center;
+    width:80%;
+    max-width:1300px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  }
+  
+  #startBtn{
+    padding:16px 40px;
+    font-size:24px;
+    margin-top:40px;
+    cursor:pointer;
+    background:#808080;
+    color:white;
+    border:none;
+    border-radius:10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="gecis-yazisi">Videolar arası geçiş yapmak için U tuşunu kullanın.</div>
+    
+    <div id="wrap">
+        <video id="videoA" src="video1.mp4"></video>
+        <video id="videoB" src="video2.mp4"></video>
+    </div>
+    
+    <button id="startBtn">Başlat</button>
+</div>
+
+<script>
+const A = document.getElementById("videoA");
+const B = document.getElementById("videoB");
+const startBtn = document.getElementById("startBtn");
+
+let running = false;
+let activeCam = "A";
+
+startBtn.onclick = ()=>{
+    A.play(); 
+    B.play();
+    A.muted=false;  // Video A sesi AÇIK
+    B.muted=true;   // Video B sesi kapalı
+    running = true;
+    // Buton gizlenmiyor - SABİT KALIYOR
+}
+
+function switchCam(){
+    if(!running) return alert("Önce Başlat'a bas.");
+    
+    const t = A.currentTime;
+    A.currentTime = t;
+    B.currentTime = t;
+
+    if(activeCam === "A"){
+        A.style.opacity=0; 
+        B.style.opacity=1;
+        A.muted=true;   // A sesini kapat
+        B.muted=false;  // B sesini aç
+        activeCam = "B";
+    }else{
+        A.style.opacity=1; 
+        B.style.opacity=0;
+        A.muted=false;  // A sesini aç
+        B.muted=true;   // B sesini kapat
+        activeCam = "A";
+    }
+}
+
+document.addEventListener("keydown",(e)=>{
+    if(e.key.toLowerCase()==="u") switchCam();
+});
+</script>
+
+</body>
+</html>
